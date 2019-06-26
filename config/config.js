@@ -1,0 +1,1 @@
+module.exports.SEED = '@try_this@seed_test';
