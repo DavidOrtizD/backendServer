@@ -17,8 +17,10 @@ exports.verifyToken = function(req, res, next) {
             ok: true,
             decoded: decoded
         }); */
-        decoded.usuario.password = '***';
-        req.currentUser = decoded.usuario;
+        if (decoded.user.password) {
+            decoded.user.password = '***';
+        }
+        req.currentUser = decoded.user;
         next();
     });
 }

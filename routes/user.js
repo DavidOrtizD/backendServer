@@ -8,23 +8,52 @@ var auth = require('../middleware/auth');
 var app = express();
 
 /*** Get all users ***/
-app.get('/', function(req, res, next) {
-    userModel.find({}, 'name email img role').exec(function(err, user) {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mesagge: 'Server Error',
-                errors: err
-            });
-        }
+app.get('/', (req, res, next) => {
 
-        res.status(200).json({
-            ok: true,
-            mesagge: 'Users obtained.',
-            users: user
+    var from = Number(req.query.from) || 0;
+    var limit = Number(req.query.limit) || 5;
+
+    if (isNaN(from)) {
+        return res.status(400).json({
+            ok: false,
+            errors: { message: `${from} is not a valid value for from parameter.` }
         });
+    }
 
-    });
+    if (isNaN(limit)) {
+        return res.status(400).json({
+            ok: false,
+            errors: { message: `${limit} is not a valid value for "limit" parameter.` }
+        });
+    }
+
+    userModel.find({}, 'name email img role')
+        .skip(from)
+        .limit(limit)
+        .exec(function(err, user) {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mesagge: 'Server Error',
+                    errors: err
+                });
+            }
+            userModel.count({}, (err, counter) => {
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        errors: err
+                    });
+                }
+
+                res.status(200).json({
+                    ok: true,
+                    mesagge: `Users obtained.`,
+                    users: user,
+                    total: counter
+                });
+            });
+        });
 });
 
 /*** Create  new User ***/
