@@ -57,8 +57,9 @@ app.get('/', (req, res, next) => {
 });
 
 /*** Create  new User ***/
-app.post('/', auth.verifyToken, (req, res) => {
+app.post('/', (req, res) => {
     var body = req.body;
+    console.log(body);
     var newUser = new userModel({
         name: body.name,
         email: body.email,

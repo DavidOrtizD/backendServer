@@ -112,7 +112,7 @@ app.post('/google', async(req, res) => {
 /*** Normal Authentication ***/
 app.post('/', (req, res) => {
     var body = req.body;
-
+    console.log(body);
     user.findOne({ email: body.email }, (err, dbUser) => {
         if (err) {
             res.status(500).json({
